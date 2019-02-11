@@ -1,0 +1,30 @@
+{
+  "name": "ueef/machina-pdo",
+  "type": "library",
+  "license": "MIT",
+  "description": "PDO drivers for ueef/machina",
+  "authors": [
+    {
+      "name": "ueef",
+      "email": "artem@arkadev.org"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "ext-pdo": "*",
+    "ueef/machina": "dev-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ueef\\Machina\\Pdo\\": "src"
+    }
+  },
+  "require-dev": {
+    "fzaninotto/faker": "^1.8"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Ueef\\Machina\\Pdo\\Tests\\": "tests"
+    }
+  }
+}
