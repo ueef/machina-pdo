@@ -17,6 +17,7 @@ use Ueef\Machina\Pdo\Mysql\Exceptions\QueryErrorException;
 use Ueef\Machina\Pdo\Mysql\Transactions\RealTransaction;
 use Ueef\Machina\Pdo\Mysql\Transactions\SavepointTransaction;
 use Ueef\Machina\Pdo\Interfaces\TransactionInterface;
+use Ueef\Machina\Pdo\Interfaces\ConnectionsManagerInterface;
 
 class Driver implements DriverInterface, TransactionalDriverInterface, LockableDriverInterface
 {
@@ -33,10 +34,10 @@ class Driver implements DriverInterface, TransactionalDriverInterface, LockableD
     private $query_builder;
 
 
-    public function __construct(PDO $connection, EncoderInterface $encoder)
+    public function __construct(ConnectionsManagerInterface $connectionManager, EncoderInterface $encoder)
     {
         $this->encoder = $encoder;
-        $this->connection = $connection;
+        $this->connection = $connectionManager->acquire();
         $this->query_builder = new QueryBuilder();
     }
 
