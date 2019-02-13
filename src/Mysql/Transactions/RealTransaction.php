@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Ueef\Machina\Pdo\Mysql\Transactions;
 
 use PDO;
+use PDOException;
 use Ueef\Machina\Exceptions\DriverException;
 use Ueef\Machina\Pdo\Interfaces\TransactionInterface;
 
@@ -21,22 +22,28 @@ class RealTransaction implements TransactionInterface
 
     public function begin(): void
     {
-        if (!$this->connection->beginTransaction()) {
-            throw new DriverException("cannot begin transaction");
+        try {
+            $this->connection->exec('BEGIN');
+        } catch (PDOException $e) {
+            throw new DriverException("cannot begin transaction", 0, $e);
         }
     }
 
     public function commit(): void
     {
-        if (!$this->connection->commit()) {
-            throw new DriverException("cannot commit transaction");
+        try {
+            $this->connection->exec('COMMIT');
+        } catch (PDOException $e) {
+            throw new DriverException("cannot begin transaction", 0, $e);
         }
     }
 
     public function rollback(): void
     {
-        if (!$this->connection->rollBack()) {
-            throw new DriverException("cannot rollback transaction");
+        try {
+            $this->connection->exec('ROLLBACK');
+        } catch (PDOException $e) {
+            throw new DriverException("cannot begin transaction", 0, $e);
         }
     }
 }
