@@ -66,11 +66,10 @@ class Driver implements DriverInterface, TransactionalDriverInterface, LockableD
                 case PropertyInterface::TYPE_STR:
                 case PropertyInterface::TYPE_FLOAT:
                 case PropertyInterface::TYPE_ARRAY:
-                case PropertyInterface::TYPE_NUMERIC:
                     $boundType = PDO::PARAM_STR;
                     break;
                 default:
-                    throw new DriverException(["unsupported type \"%s\"", $property->getType()]);
+                    throw new DriverException(["the type of property %s is unsupported", $property->getType()]);
             }
 
             $query->bindColumn(++$counter, $columns[$key], $boundType);
@@ -122,7 +121,6 @@ class Driver implements DriverInterface, TransactionalDriverInterface, LockableD
                             $item[$key] = (int) $value;
                             break;
                         case PropertyInterface::TYPE_STR:
-                        case PropertyInterface::TYPE_NUMERIC:
                             $item[$key] = $value;
                             break;
                         default:
@@ -224,56 +222,35 @@ class Driver implements DriverInterface, TransactionalDriverInterface, LockableD
 
         $properties = $metadata->getProperties();
         foreach ($binds as $index => [$key, $value]) {
-            if (isset($properties[$key])) {
-                $property = $properties[$key];
-            } else {
-                throw new DriverException(["undefined property \"%s\"", $key]);
+            if (!isset($properties[$key])) {
+                throw new DriverException(["the property %s is undefined", $key]);
             }
 
-            $boundType = null;
-            $valueType = gettype($value);
-            switch ($property->getType()) {
+            $property = $properties[$key];
+            $property->validate($value);
+
+            switch ($properties[$key]->getType()) {
                 case PropertyInterface::TYPE_INT:
-                    if ('integer' == $valueType) {
-                        $boundType = PDO::PARAM_INT;
-                    }
+                    $type = PDO::PARAM_INT;
                     break;
                 case PropertyInterface::TYPE_STR:
-                    if ('string' == $valueType) {
-                        $boundType = PDO::PARAM_STR;
-                    }
+                    $type = PDO::PARAM_STR;
                     break;
                 case PropertyInterface::TYPE_BOOL:
-                    if ('boolean' == $valueType) {
-                        $boundType = PDO::PARAM_BOOL;
-                    }
+                    $type = PDO::PARAM_BOOL;
                     break;
                 case PropertyInterface::TYPE_FLOAT:
-                    if ('double' == $valueType) {
-                        $boundType = PDO::PARAM_STR;
-                    }
+                    $type = PDO::PARAM_STR;
                     break;
                 case PropertyInterface::TYPE_ARRAY:
-                    if ('array' == $valueType) {
-                        $value = $this->encoder->encode($value);
-                        $boundType = PDO::PARAM_STR;
-                    }
-                    break;
-                case PropertyInterface::TYPE_NUMERIC:
-                    if ('string' == $valueType && is_numeric($value)) {
-                        $boundType = PDO::PARAM_STR;
-                    }
+                    $value = $this->encoder->encode($value);
+                    $type = PDO::PARAM_STR;
                     break;
                 default:
-                    throw new DriverException(["unsupported type \"%s\"", $property->getType()]);
+                    throw new DriverException(["the type of property %s is incompatible", $property->getType()]);
             }
 
-            if ($boundType) {
-                $query->bindValue($index+1, $value, $boundType);
-            } else {
-                throw new DriverException(["unexpected value of type \"%s\"", $valueType]);
-            }
-
+            $query->bindValue($index+1, $value, $type);
         }
 
         try {
