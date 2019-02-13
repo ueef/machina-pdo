@@ -206,21 +206,16 @@ class Driver implements DriverInterface, TransactionalDriverInterface, LockableD
 
     public function commit(): void
     {
-        $this->getTransaction()->commit();
+        if ($this->transactions) {
+            array_pop($this->transactions)->commit();
+        }
     }
 
     public function rollback(): void
     {
-        $this->getTransaction()->rollback();
-    }
-
-    private function getTransaction(): TransactionInterface
-    {
-        if (!$this->transactions) {
-            throw new DriverException("there is not active transaction");
+        if ($this->transactions) {
+            array_pop($this->transactions)->rollback();
         }
-
-        return array_pop($this->transactions);
     }
 
     private function execute(MetadataInterface $metadata, string $query, array $binds): PDOStatement
