@@ -11,15 +11,13 @@ use Ueef\Encoder\Interfaces\EncoderInterface;
 use Ueef\Machina\Interfaces\DriverInterface;
 use Ueef\Machina\Interfaces\MetadataInterface;
 use Ueef\Machina\Interfaces\PropertyInterface;
-use Ueef\Machina\Interfaces\LockableDriverInterface;
-use Ueef\Machina\Interfaces\TransactionalDriverInterface;
 use Ueef\Machina\Pdo\Mysql\Exceptions\QueryErrorException;
 use Ueef\Machina\Pdo\Mysql\Transactions\RealTransaction;
 use Ueef\Machina\Pdo\Mysql\Transactions\SavepointTransaction;
 use Ueef\Machina\Pdo\Interfaces\TransactionInterface;
 use Ueef\Machina\Pdo\Interfaces\ConnectionsManagerInterface;
 
-class Driver implements DriverInterface, TransactionalDriverInterface, LockableDriverInterface
+class Driver implements DriverInterface
 {
     /** @var EncoderInterface */
     private $encoder;
