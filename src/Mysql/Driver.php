@@ -196,7 +196,7 @@ class Driver implements DriverInterface
         } else {
             $transaction = new RealTransaction($this->connection);
         }
-
+        $transaction->begin();
         $this->transactions[] = $transaction;
     }
 
