@@ -12,19 +12,11 @@
   "require": {
     "php": ">=7.1",
     "ext-pdo": "*",
-    "ueef/machina": "dev-dev"
+    "ueef/machina": "^0.0"
   },
   "autoload": {
     "psr-4": {
       "Ueef\\Machina\\Pdo\\": "src"
-    }
-  },
-  "require-dev": {
-    "fzaninotto/faker": "^1.8"
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Ueef\\Machina\\Pdo\\Tests\\": "tests"
     }
   }
 }
