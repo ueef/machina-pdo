@@ -152,7 +152,7 @@ class Driver implements DriverInterface
         } else {
             $timeout = 0;
         }
-        $query = $this->connection->prepare("SELECT GET_LOCK(concat(database(), '.', ?, '.', ?), ?)");
+        $query = $this->connection->prepare("SELECT GET_LOCK(hex(sha2(concat(database(), '.', ?, '.', ?)), 256), ?)");
         $query->bindValue(1, $metadata->getSource(), PDO::PARAM_STR);
         $query->bindValue(2, $resource, PDO::PARAM_STR);
         $query->bindValue(3, $timeout, PDO::PARAM_INT);
@@ -172,7 +172,7 @@ class Driver implements DriverInterface
 
     public function unlock(MetadataInterface $metadata, string $resource): bool
     {
-        $query = $this->connection->prepare("SELECT RELEASE_LOCK(concat(database(), '.', ?, '.', ?))");
+        $query = $this->connection->prepare("SELECT RELEASE_LOCK(hex(sha2(concat(database(), '.', ?, '.', ?)), 256))");
         $query->bindValue(1, $metadata->getSource(), PDO::PARAM_STR);
         $query->bindValue(2, $resource, PDO::PARAM_STR);
 
