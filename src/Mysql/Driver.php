@@ -6,8 +6,10 @@ namespace Ueef\Machina\Pdo\Mysql;
 use PDO;
 use PDOStatement;
 use PDOException;
+use Ueef\Machina\Collections\ArraysCollection;
 use Ueef\Machina\Exceptions\DriverException;
 use Ueef\Encoder\Interfaces\EncoderInterface;
+use Ueef\Machina\Interfaces\ArraysCollectionInterface;
 use Ueef\Machina\Interfaces\DriverInterface;
 use Ueef\Machina\Interfaces\MetadataInterface;
 use Ueef\Machina\Interfaces\PropertyInterface;
@@ -39,7 +41,7 @@ class Driver implements DriverInterface
         $this->query_builder = new QueryBuilder();
     }
 
-    public function find(MetadataInterface $metadata, array $filters = [], array $orders = [], int $limit = 0, int $offset = 0): array
+    public function find(MetadataInterface $metadata, array $filters = [], array $orders = [], int $limit = 0, int $offset = 0): ArraysCollectionInterface
     {
         $properties = $metadata->getProperties();
 
@@ -91,7 +93,7 @@ class Driver implements DriverInterface
             $items[] = $item;
         }
 
-        return $items;
+        return new ArraysCollection($items);
     }
 
     public function count(MetadataInterface $metadata, array $filters = []): int

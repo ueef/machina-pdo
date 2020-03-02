@@ -10,9 +10,9 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.4",
     "ext-pdo": "*",
-    "ueef/machina": "^0.3"
+    "ueef/machina": "^0.4"
   },
   "autoload": {
     "psr-4": {
